@@ -34,4 +34,3 @@ To complement the Random Forest model, we implemented a Logistic Regression clas
 The Logistic Regression model demonstrated strong predictive performance. It had an accuracy of 97.81%, precision of 0.947, recall of 0.968, and F1-score of 0.958. Compared to the performance evaluation of the Random Forest model, Logistic Regression is slightly better at identifying depression among college students. See below for the bar graph of the top 20 predictors using Logistic Regression:
 
 <img width="766" height="606" alt="LogistcReg" src="https://github.com/user-attachments/assets/c48473b5-a967-4220-b31e-6137792fdcdf" />
-
