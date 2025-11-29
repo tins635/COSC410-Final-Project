@@ -34,3 +34,34 @@ To complement the Random Forest model, we implemented a Logistic Regression clas
 The Logistic Regression model demonstrated strong predictive performance. It had an accuracy of 97.81%, precision of 0.947, recall of 0.968, and F1-score of 0.958. Compared to the performance evaluation of the Random Forest model, Logistic Regression is slightly better at identifying depression among college students. See below for the bar graph of the top 20 predictors using Logistic Regression:
 
 <img width="766" height="606" alt="LogistcReg" src="https://github.com/user-attachments/assets/c48473b5-a967-4220-b31e-6137792fdcdf" />
+
+## Progress Made on 11/28
+Using the same preprocessing steps as the Random Forest and Logistic Regression models, we trained an Multi-Layer Perceptron Neural Network on our depression dataset. Neural networks distribute learned information across multiple hidden layers and neurons, so it does not naturally provide feature importance (i.e., the MLP model cannot be used to find the top 20 predictors of depression among college students). Nonetheless, we implemented this model to test whether nonlinear relationships among student characteristics can improve the prediction of depression diagnoses. In other words, the MLP model provides an additional perspective on whether depression risk is driven by simple additive effects or higher-order patterns in the data. 
+
+We implemented the MLP model with the following architecture:
+* Two Hidden Layers
+* ReLU Activation Function
+* Adam Optimizer (Adaptive Optimization of the Learning Rate)
+* Cross-Entropy Loss Function
+* L2 Regularization
+
+The MLP was trained on the 80% training split, and it involves repeatedly adjusting internal weights to minimize prediction error using backpropagation. 
+
+*Note*: Since the MLP uses an adaptive optimizer, training converges reliably even without specific hyperparameter tuning.
+
+After training, we evaluated the model on the unseen 20% test set. It had an accuracy of 98.38%, precision of 0.977, recall of 0.959, and F1-score of 0.968. Thus, the MLP model achieved the highest accuracy, precision, and F1-score among the three models we have implemented so far. This indicates that nonlinear machine learning approaches are well-suited for identifying patterns associated with depression in college students. The results suggest that depression risk is influenced by interacting factors, and neural models that capture these interactions can more accurately distinguish students who may be experiencing depressive symptons. See below for the loss function of the MLP model:
+
+<img width="800" height="600" alt="MLP_NN" src="https://github.com/user-attachments/assets/e552c9e3-cbf0-4788-95f9-8c2154a53414" />
+
+To further optimizer the performance of the MLP model, we conducted systematic hyperparameter tuning using GridSearchCV with 5-fold cross-validation. The training set was split into five equally sized folds, with four folds used for training and one for validation, rotating through all folds. The search explored a predefined hyperparameter grid that included:
+* Hidden Layer Architecture: # of Layers and # of Neurons per Layer
+* Activation Function: ReLU versus tanh
+* Regularization Strength: L2 penalty parameter (alpha)
+* Optimizer Settings: Different Learning Rates
+* Training Schedule: # of Training Epochs
+
+For each hyperparameter combination, the model was trained and evaluated on held-out folds, and the average validation score was used to select the best configuration. The final best-performing model was retrained on the full training dataset and then evaluated on the test set. Here were the results:
+
+(ADD THE HYPERPARAMETER TUNING RESULTS HERE)
+
+This approach allows the MLP model to achieve robust predictive performance while minimizing issues such as overfitting and unstable gradients. This new tuned model had (ADD EVALUATION REULTS HERE).
