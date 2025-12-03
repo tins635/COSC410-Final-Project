@@ -1,54 +1,12 @@
-import pandas as pd
 import numpy as np
-from sklearn.preprocessing import OneHotEncoder
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.neural_network import MLPClassifier
-import warnings
+import matplotlib.pyplot as plt
 
-warnings.filterwarnings("ignore")
-
-# LOADING THE DATA
-df = pd.read_csv("data/HMS_2024-2025.csv", low_memory=False)
-
-df["dx_dep"] = df["dx_dep"].fillna(0).astype(int)
-y = df["dx_dep"].to_numpy()
-Xdf = df.drop(columns=["dx_dep"])
-
-# PREPROCESSING THE DATA
-
-# convert mixed-type columns (i.e., converting "object" to numeric when possible)
-for col in Xdf.columns:
-    if Xdf[col].dtype == "object":
-        try:
-            Xdf[col] = pd.to_numeric(Xdf[col])
-        except:
-            pass
-
-numeric_cols = Xdf.select_dtypes(include=["number"]).columns.tolist()
-object_cols = Xdf.select_dtypes(include=["object"]).columns.tolist()
-
-# only encode small categorical columns and drop high-cardinality object columns
-small_cat_cols = [c for c in object_cols if Xdf[c].nunique() <= 15]
-large_cat_cols = [c for c in object_cols if c not in small_cat_cols]
-Xdf = Xdf.drop(columns=large_cat_cols)
-
-# one-hot encode small categorical columns
-if len(small_cat_cols) > 0:
-    ohe = OneHotEncoder(sparse=False, handle_unknown="ignore")
-    X_cat = ohe.fit_transform(Xdf[small_cat_cols])
-    cat_feature_names = ohe.get_feature_names_out(small_cat_cols)
-else:
-    X_cat = np.empty((len(Xdf), 0))
-    cat_feature_names = []
-
-X_num = Xdf[numeric_cols].to_numpy()
-
-# final feature matrix
-X = np.hstack([X_num, X_cat])
-
-# replace all NaN with 0
-X = np.nan_to_num(X, nan=0.0)
+X = np.load("X.npy")
+y = np.load("y.npy")
+feature_names = np.load("feature_names.npy", allow_pickle=True)
 
 # TRAINING THE MODEL
 X_train, X_test, y_train, y_test = train_test_split(
@@ -96,3 +54,13 @@ print("Accuracy :", accuracy)
 print("Precision:", precision)
 print("Recall   :", recall)
 print("F1 Score :", f1)
+
+# LOSS CURVE
+plt.figure(figsize=(8, 6))
+plt.plot(best_mlp.loss_curve_)
+plt.title("MLP w/ Tuning Training Loss Curve")
+plt.xlabel("Epoch")
+plt.ylabel("Loss")
+plt.grid(True)
+plt.tight_layout()
+plt.savefig("MLP_HT_Loss.pdf")
