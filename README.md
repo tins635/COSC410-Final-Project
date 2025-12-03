@@ -154,15 +154,16 @@ Loss Curve Graph:
 ### Multi-Layer Perceptron Neural Network w/ Hyperparameter Tuning
 Best Hyperparameters Found:
 
+{'activation': 'relu', 'alpha': 0.0001, 'hidden_layer_sizes': (128, 64, 32), 'learning_rate_init': 0.01, 'max_iter': 200}
 
-
-* Accuracy: 
-* Precision: 
-* Recall: 
-* F1-Score: 
+* Accuracy: 98.66%
+* Precision: 0.992
+* Recall: 0.958
+* F1-Score: 0.974
 
 Loss Curve Graph:
 
+<img width="800" height="600" alt="mlp" src="https://github.com/user-attachments/assets/7eaae0c9-77b3-4da2-8219-b855e3ada5f7" />
 
 #### Comparison to 1 Year of Data
 [INSERT COMMENTS ON EVAL METRICS AND HOW THE LOSS CURVE CHANGED]
