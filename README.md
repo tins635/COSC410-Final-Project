@@ -13,6 +13,9 @@ https://healthymindsnetwork.org/research/data-for-researchers/
 1. to determine which features in the HMS student survey dataset most strongly predict whether a student reports having been diagnosed with depression, and
 2. to evaluate how accurately a machine learning model can classify students as reporting a depression diagnosis (dx_dep) or not based on their survey responses.
 
+## Hypothesis
+Based on previous research that used ML algorithms to detect depression, we hypothesize that the Random Forest model will outperform the other machine learning algorithms in predicting depression among college students. We also hypothesize that the top predictors will revolve around stress levels and social support.
+
 ## One Year of Data 
 To start off our research, we decided to focus on the 2024-2025 HMN student-level survey data. By doing so, we can compare how model performance and predictions change as we increase the size of our dataset. The 2024-2025 HMN dataset contains 84,735 responses, and we trained 4 different models on this dataset.
 
