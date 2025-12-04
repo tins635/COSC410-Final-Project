@@ -203,7 +203,7 @@ Put together, the strong performance of logistic regression paired with the impr
 
 ## Conclusions
 ### Research Goal 1
-Since the MLP models do not provide interpretable coefficients or feature importance values, our analysis of predictive factors relies solely on the Random Forest and Logistic Regression models. Across these two interpretable approaches, a consistent and highly concentrated set of predictors emerged as the most influential. Nearly all of the top strongest predictors were variables directly related to students' prior mental heatlh status, especially:
+Since the MLP models do not provide interpretable coefficients or feature importance values, our analysis of predictive factors relies solely on the Random Forest and Logistic Regression models. Across these two interpretable approaches, a consistent and highly concentrated set of predictors emerged as the most influential. Nearly all of the top strongest predictors were variables directly related to students' prior mental health status, especially:
 * previous diagnosis of depression or anxiety,
 * history of counseling or therapy, and
 * current self-assessment of mental health.
