@@ -6,27 +6,84 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-# LOADING THE DATA
-paths = [
-    "HMS_2016-2017.csv",
-    "HMS_2017-2018.csv",
-    "HMS_2018-2019.csv",
-    "HMS_2019-2020.csv",
-    "HMS_2020-2021.csv",
-    "HMS_2021-2022.csv",
-    "HMS_2022-2023.csv",
-    "HMS_2023-2024.csv",
-    "HMS_2024-2025.csv"
-]
-dfs = []
-for p in paths:
-    try:
-        dfs.append(pd.read_csv(p, low_memory=False))
-        print(f"Loaded: {p}")
-    except Exception as e:
-        print(f"Error loading {p}: {e}")
+FILTER_VARIABLES = [
 
-df = pd.concat(dfs, ignore_index=True)
+    # --- Diagnosis variables (except dx_dep target) ---
+    "dx_bip","dx_anx","dx_ocd","dx_trauma","dx_neurodev",
+    "dx_ea","dx_psy","dx_pers","dx_sa","dx_none","dx_dk","dx_any",
+
+    # Diagnosis detail sub-items
+    "dx_dep_1","dx_dep_2","dx_dep_3","dx_dep_4","dx_dep_5",
+    *[f"dx_bip_{i}" for i in range(1,6)],
+    *[f"dx_ax_{i}" for i in range(1,8)],
+    *[f"dx_ocd_{i}" for i in range(1,8)],
+    *[f"dx_trauma_{i}" for i in range(1,6)],
+    *[f"dx_neurodev_{i}" for i in range(1,6)],
+    *[f"dx_ea_{i}" for i in range(1,8)],
+    *[f"dx_psy_{i}" for i in range(1,8)],
+    *[f"dx_perso_{i}" for i in range(1,13)],
+    *[f"dx_sa_{i}" for i in range(1,5)],
+
+    # Medication variables
+    *[f"meds_{i}" for i in range(1,10)],
+    "meds_dis",
+    *[f"meds_w_{i}" for i in range(1,6)],
+    *[f"meds_cur_{i}" for i in range(1,9)],
+    *[f"meds_time_{i}" for i in range(1,8)],
+    "meds_any","meds_help_me","meds_help_others",
+
+    # Stimulant/anti-anxiety reasons
+    *[f"stim_reason_{i}" for i in range(1,6)],
+    *[f"antianx_reason_{i}" for i in range(1,6)],
+
+    # Misuse variables
+    "stim_misuse","stim_sold","stim_prescriber",
+
+    # Summary MH flags
+    "anymhprob","dep_any","dep_maj","dep_oth","deprawsc",
+    "anx_any","anx_mod","anx_sev","anx_score",
+    "ed_any_sde","sib_any","sui_idea",
+    "positiveMH","flourish","dep_or_anx",
+    "needmet_temp","tx_any","inf_any","meds_any","ther_any",
+]
+
+def preprocess_filtered(df):
+    """
+    Remove only variables that directly reveal a depression diagnosis
+    or prior MH treatment. Keep symptom-based predictors.
+    """
+    cols_to_drop = []
+
+    for col in df.columns:
+        # Never drop target
+        if col.lower() == "dx_dep":
+            continue
+
+        # Remove exact matches
+        if col in FILTER_VARIABLES:
+            cols_to_drop.append(col)
+
+    df = df.drop(columns=[c for c in cols_to_drop if c in df.columns])
+
+    return df
+
+df = pd.read_csv("HMS_2024-2025.csv")
+df = preprocess_filtered(df)
+
+# # LOADING THE DATA
+# paths = [
+#     "HMS_2022-2023.csv",
+#     "HMS_2023-2024.csv",
+#     "HMS_2024-2025.csv"
+# ]
+# dfs = []
+# for p in paths:
+#     try:
+#         dfs.append(pd.read_csv(p, low_memory=False))
+#         print(f"Loaded: {p}")
+#     except Exception as e:
+#         print(f"Error loading {p}: {e}")
+# df = pd.concat(dfs, ignore_index=True)
 
 print("Number of Survey Responses (# of Rows): ", len(df))
 
