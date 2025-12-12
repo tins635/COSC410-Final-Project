@@ -131,10 +131,32 @@ Performance is almost unchanged. The model already generalizes well, suggesting 
 
 ### Multi-Layer Perceptron (With Hyperparameter Tuning)
 #### 1-Year Performance
+`Best Hyperparameters Found:
+{'activation': 'relu', 'alpha': 0.01, 'hidden_layer_sizes': (64,), 'learning_rate_init': 0.001, 'max_iter': 200}`
 
+`Accuracy : 0.9836549241753703`
+
+`Precision: 0.968070337806571`
+
+`Recall   : 0.9678464029609067`
+
+`F1 Score : 0.9679583574320416`
+
+<img width="800" height="600" alt="HT1" src="https://github.com/user-attachments/assets/31da8d7a-010a-451f-8a48-74ff657d075c" />
 
 #### 3-Year Performance
+`Best Hyperparameters Found:
+{'activation': 'relu', 'alpha': 0.0001, 'hidden_layer_sizes': (128, 64, 32), 'learning_rate_init': 0.01, 'max_iter': 200}`
 
+`Accuracy : 0.9866237848110518`
+
+`Precision: 0.9918406072106262`
+
+`Recall   : 0.9575890812494275`
+
+`F1 Score : 0.9744139441674046`
+
+<img width="800" height="600" alt="MLP_HT_Loss" src="https://github.com/user-attachments/assets/962af8bf-ce38-40c4-a657-86cfa9fc7428" />
 
 #### Comparison & Interpretation
 The tuned MLP becomes even stronger with more data, developing sharper decision boundaries and achieving the highest precision of any model. This suggests that depression prediction includes nonlinear interactions that deep learning captures best.
