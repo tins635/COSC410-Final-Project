@@ -1,225 +1,103 @@
-# COSC410-Final-Project
-**Predicting Depression in College Students Using Machine Learning**
-
-We aim to identify the most effective machine learning model for predicting depression using large-scale student survey responses. Our goals are:
-1. **Prediction**: Determine which models most accurately classify depression.
-2. **Interpretation**: Identify which features reliably predict depression risk.
-
-## 1. Introduction
-Depression is one of the most prevalent mental health concerns among college students in the United States and is associated with reduced academic performance, increased dropout risk, social impairment, and poorer overall well-being. Understanding which factors increase students' risk for depression is therefore essential for designing campus-level prevention and intervention strategies. Large-scale survey datasets, such as those from the Healthy Minds Network (HMN), offer an opportunity to examine patterns across tens of thousands of students and identify which demographic, psychosocial, academic, or clinical features are most strongly associated with depression. Machine learning is well suited to this task because it can:
-- Process high-dimensional mixed data
-- Capture nonlinear relationships
-- Provide interpretable indicators of risk (for some models)
-
-Our work evaluates multiple machine learning models and compares performance across:
-- One Year of Data (2024-2025)
-- Three Years of Data (2022-2025)
-
-Later sections will explore a version of the analysis excluding mental-health-related predicors, testing whether depression can still be predicted from nonclinical factors. 
-
-## 2. Dataset
-We use the **Healthy Minds Study** student-level survey dataset.
-- **1-year dataset (2024-2025)**: 84,735 responses
-- **3-year dataset (2022-2025)**: 205,213 responses
-
-A PDF codebook (2024-2025 edition) is included in this repository. To request HMN data, visit: https://healthymindsnetwork.org/research/data-for-researchers/ 
-
-## 3. Goals and Hypotheses
-### Goals
-1. Identify survey features that most strongly predict depression
-2. Evaluate classification performance across multiple ML approaches
-
-### Hypotheses
-Based on previous research that used ML algorithms to detect depression, we hypothesize that
-- Random Forest will outperform other models.
-- Top predictors will be stress and social support.
-
-## 4. Modeling Pipeline
-All models share the same core pipeline:
-1. Data cleaning & handling missing values
-2. Encoding categorical variables
-3. Standardization (Logistic Regression & MLP)
-4. Model training using the selected algorithm
-5. Evaluation using:
-   - Accuracy
-   - Precision
-   - Recall
-   - F1-Score
-6. (For Random Forest) Feature Importance for Top 20 Predictors
-7. (For Logistic Regression) Coefficient Values for Top 20 Predictors
-8. (For MLP) Loss Curve Visualization
-9. (For Tuned MLP) Additional hyperparameter tuning via GridSearchCV
-
-## 5. Results: 1-Year vs. 3-Years Data
-### Random Forest
-#### 1-Year Performance
-`Accuracy : 0.9350327491591433`
-
-`Precision: 0.8178768745067088`
-
-`Recall   : 0.9588248901226001`
-
-`F1 Score : 0.8827600894473432`
-
-<img width="1000" height="800" alt="rand_forest_preds1" src="https://github.com/user-attachments/assets/6ceef7b7-38ff-4c86-9974-0df263f1f9d6" />
-
-#### 3-Year Performance
-`Accuracy : 0.9252491289623078`
-
-`Precision: 0.7974232663887836`
-
-`Recall   : 0.9638178986901164`
-
-`F1 Score : 0.8727604512276046`
-
-<img width="1000" height="800" alt="rand_forest_preds2" src="https://github.com/user-attachments/assets/18f39247-e486-47bc-8c40-0799c9b63696" />
-
-#### Comparison & Interpretation
-Across larger data, Random Forest becomes more sensitive (higher recall) but less precise. This suggests that combining years and having more data responses increase population variability and noise, making Random Forest over-inclusive. Importantly, the top predictors remain nearly identical, confirming that diagnostic history is a stable and dominant signal. 
-
-### Logistic Regression
-#### 1-Year Performance
-`Accuracy : 0.9781082197439075`
-
-`Precision: 0.947463768115942`
-
-`Recall   : 0.9678464029609067`
-
-`F1 Score : 0.9575466300492047`
-
-<img width="1000" height="800" alt="log_reg_preds1" src="https://github.com/user-attachments/assets/98f97dca-1fa3-43dd-8392-106d74955f4a" />
-
-#### 3-Year Performance
-`Accuracy : 0.9804838827571084`
-
-`Precision: 0.9610756608933455`
-
-`Recall   : 0.9657415040762114`
-
-`F1 Score : 0.9634029332480467`
-
-<img width="1000" height="800" alt="log_reg_preds2" src="https://github.com/user-attachments/assets/50d56f8a-78a1-4634-8646-32811b970e06" />
-
-#### Comparison & Interpretation
-Logistic Regression improves with more data, indicating the underlying structure is strongly linear and scales well. Some predictors shift (`stress1` drops out), but diagnostic history still dominates, with social/peer-relationship features becoming stronger.
-
-### Multi-Layer Perceptron (No Hyperparameter Tuning)
-#### 1-Year Performance
-`Accuracy : 0.9832418717177082`
-
-`Precision: 0.9752883031301482`
-
-`Recall   : 0.9585935692805921`
-
-`F1 Score : 0.966868875408306`
-
-<img width="800" height="600" alt="MLP_Loss1" src="https://github.com/user-attachments/assets/d30e1e74-e383-4819-ad64-97becfdf5fb9" />
-
-#### 3-Year Performance
-`Accuracy : 0.9836269278561509`
-
-`Precision: 0.9779789120089577`
-
-`Recall   : 0.9600622881744069`
-
-`F1 Score : 0.9689377831191641`
-
-<img width="800" height="600" alt="MLP_Loss2" src="https://github.com/user-attachments/assets/aa9350f4-08e4-4a3c-9222-87c54d9bdee0" />
-
-#### Comparison & Interpretation
-Performance is almost unchanged. The model already generalizes well, suggesting that even the untuned MLP captures stable nonlinear patterns without being heavily influenced by dataset expansion.
-
-### Multi-Layer Perceptron (With Hyperparameter Tuning)
-#### 1-Year Performance
-`Best Hyperparameters Found:
-{'activation': 'relu', 'alpha': 0.01, 'hidden_layer_sizes': (64,), 'learning_rate_init': 0.001, 'max_iter': 200}`
-
-`Accuracy : 0.9836549241753703`
-
-`Precision: 0.968070337806571`
-
-`Recall   : 0.9678464029609067`
-
-`F1 Score : 0.9679583574320416`
-
-<img width="800" height="600" alt="HT1" src="https://github.com/user-attachments/assets/31da8d7a-010a-451f-8a48-74ff657d075c" />
-
-#### 3-Year Performance
-`Best Hyperparameters Found:
-{'activation': 'relu', 'alpha': 0.0001, 'hidden_layer_sizes': (128, 64, 32), 'learning_rate_init': 0.01, 'max_iter': 200}`
-
-`Accuracy : 0.9866237848110518`
-
-`Precision: 0.9918406072106262`
-
-`Recall   : 0.9575890812494275`
-
-`F1 Score : 0.9744139441674046`
-
-<img width="800" height="600" alt="MLP_HT_Loss" src="https://github.com/user-attachments/assets/962af8bf-ce38-40c4-a657-86cfa9fc7428" />
-
-#### Comparison & Interpretation
-The tuned MLP becomes even stronger with more data, developing sharper decision boundaries and achieving the highest precision of any model. This suggests that depression prediction includes nonlinear interactions that deep learning captures best.
-
-### Summary Across All Models
-Across both datasets, the MLP with hyperparameter tuning consistently performs the best, followed closely by the untuned MLP and Logistic Regression. Random Forest is the only model that degrades slightly with additional years of data. Across all models, prior mental-health diagnoses dominate the top 20 predictors, confirming that past clinical history is the strongest predictor of depression in this dataset.
-
-## 6. Excluding Mental-Health Predictors
-To evaluate whether depression can still be predicted using non-mental-health variables, we constructured an alternative preprocessing pipeline that removes all features directly tied to prior mental-health history. Below are the performances of each model with 1 year of data.
-
-### Random Forest
-`Accuracy : 0.8521862276509117`
-
-`Precision: 0.7011061946902655`
-
-`Recall   : 0.7330557483229239`
-
-`F1 Score : 0.7167250932941309`
-
-<img width="1000" height="800" alt="RF_FILTERED" src="https://github.com/user-attachments/assets/89443500-ae14-4224-8aab-92039605d798" />
-
-### Logistic Regression
-`Accuracy : 0.8266359827698118`
-
-`Precision: 0.6174325928438189`
-
-`Recall   : 0.8422391857506362`
-
-`F1 Score : 0.7125244618395304`
-
-<img width="1000" height="800" alt="LF_FILTERED" src="https://github.com/user-attachments/assets/69528517-7163-4925-b4d1-4a2badc174e2" />
-
-### MLP w/o Hyperparameter Tuning
-`Accuracy : 0.8251017879270668`
-
-`Precision: 0.6621331424481031`
-
-`Recall   : 0.6419153365718251`
-
-`F1 Score : 0.6518675123326286`
-
-<img width="800" height="600" alt="MLP1_FILTERED" src="https://github.com/user-attachments/assets/d1f97be6-bb9d-42a6-ad7e-394df78345cc" />
-
-### MLP w/ Hyperparameter Tuning
-`Accuracy : 0.854310497433174`
-
-`Precision: 0.7498652291105121`
-
-`Recall   : 0.6435345824658801`
-
-`F1 Score : 0.6926428482509647`
-
-<img width="800" height="600" alt="MLP2_FILTERED" src="https://github.com/user-attachments/assets/903ff0fe-fd9e-435e-bfdd-0d8b37e1aac1" />
-
-### Analysis
-Even after excluding all prior mental-health indicators, the filtered models identified several variables that remained moderately predictive of depression. 
-- Random Forest emphasized perceived need for support, general disability indicators, `talk1_1` (communication/connection), satisfaction metrics, and several behavorial items. These predictors reflect broader functional impairments and psychosocial factors rather than direct mental-health history.
-- Logistic Regression highlighted lifestyle and academic engagement variables such as drug use categories, satisfaction measures, academic achievement, loneliness, and peer interactions. These coefficients suggest that social isolation, academic pressure, and substance-use-related behaviors may correlate with depression risk even without explicit clinical features.
-
-The exclusion of mental-healh variables expectedly reduced predictive performance across all models compared to the original full-feature models. However, accuracy and F1-scores remained suprisingly strong, indicating that non-clinical variables still preserve meaningful signal related to depression risk.
-- Random Forest delivered the strongest overall performance, which is the complete opposite of the original full-feature performance.
-- Logistic Regression achieved the highest recall, meaning it identified a larger proportion of individuals with depression, though at the cost of reduced precision.
-- The performance of the MLP w/o Hyperparameter Tuning declined mostly, indicating a loss of strong nonlinear mental-health predictors.
-- The tuned MLP achieved the highest overall accuracy, though with more conservative recall.
-
-These new models suggest that depression correlates with broader social, behavorial, and functional dimensions, not just clinical indicators. However, with the decline in performance, we see that non-clinical factors help, but they do not replace the value of mental-health-specific information. This filtered-feature experiment demonstrates the potential (and limitations) of early-screening models that rely soley on general behavorial or demographic data. It also highlights opportunities for improving the fairness and accessibility of predictive screening tools by reducing reliance on clinical histories that not all individuals have equal access to.
+# Predicting Depression in College Students Using Machine Learning
+
+## Overview
+This project investigates the use of machine learning to predict depression among U.S. college students using large-scale survey data from the Healthy Minds Network. The primary aims are to identify which machine learning models most accurately classify depression and to determine which survey features most strongly contribute to prediction. We evaluate Random Forests, Logistic Regression, and Multi-Layer Perceptron (MLP) models on both one-year and three-year datasets exceeding 200,000 responses. Across all settings, neural network models, particularly the MLP with hyperparameter tuning, achieve the strongest performance, indicating that depression risk reflects nonlinear interactions among student characteristics. When mental-health-related predictors are included, prior diagnostic history dominates feature importance across models, producing very high predictive accuracy. However, a complementary analysis excluding all mental health variables shows that depression can still be moderately predicted using non-clinical factors such as social connection, academic engagement, lifestyle behaviors, and disabilities, though with reduced performance. Together, these findings demonstrate both the power and limitations of machine learning for mental health prediction, highlighting the critical role of clinical history while also revealing the potential for broader, non-clinical early screening approaches in college populations. 
+
+## Replication Instructions
+This section describes how to reproduce all preprocessing, modeling, and evaluation steps used in this project. The analysis was conducted in Python using standard machine learning libraries. 
+
+### 1. Environment Setup
+Ensure you are using Python 3.9+ and install the following packages:
+* `numpy`
+* `pandas`
+* `scikit-learn`
+* `matplotlib`
+
+These packages can be installed via the following line in the terminal:
+`pip install numpy pandas scikit-learn matplotlib`
+
+_<ins> Note</ins>:_ All experiments were run with fixed random seeds (`random_state=42`) to ensure reproducibility.
+
+### 2. Data Acquisition
+Request access to the Healthy Minds Study (HMS) survey data from the Healthy Minds Network. Download the relevant CSV files (e.g., `HMS_2024-2025.csv` for the most recent year of survey responses) and place them in the project directory. To request HMN data, visit: https://healthymindsnetwork.org/research/data-for-researchers/ 
+
+The target variable is `dx_dep`, a binary indicator of depression diagnosis.
+
+### 3. Preprocessing
+Run `preprocess.py` to generate the model-ready feature matrix.
+
+This script performs the following steps:
+1. Loads the HMS CSV file(s).
+2. Optionally removes all mental-health-related variables using the predefined `FILTER_VARIABLES` list, while retaining `dx_dep` as the prediction target.
+3. Converts object-type columns to numeric where possible.
+4. Drops high-cardinality categorical variables (more than 15 unique values).
+5. One-hot encodes remaining small categorical variables.
+6. Combines numeric and encoded categorical features into a single feature matrix.
+7. Replaces all missing values with zeros.
+8. Saves the resulting arrays to disk:
+   * `X.npy` - feature matrix
+   * `y.npy` - target labels
+   * `feature_names.npy` - feature names
+
+To replicate the filtered (non-mental health) analysis, ensure the `preprocess_filtered()` function is applied before model training. To replicate the full-feature analysis, comment out or bypass the filtering step.
+
+### 4. Train-Test Split
+All models use the same data split:
+* 80% training
+* 20% testing
+* Stratified by `dx_dep`
+
+This split is performed internally within each model script using:
+`train_test_split(X, y, test_size=0.20, stratify=y, random_state=42)`
+
+### 5. Model Training and Evaluation
+#### Random Forest
+Run `random_forests_model.py` to train a Random Forest classifier with:
+* 300 trees (`n_estimators=300`)
+* Maximum depth of 20 (`max_depth=20`)
+* Balanced class weights (`class_weight="balanced"`)
+
+The script reports accuracy, precision, recall, and F1-score and saves a PDF (`rand_forest_preds.pdf`) showing the top 20 most important features based on Gini importance.
+
+#### Logistic Regression
+Run `logistic_regression_model.py` to train a regularized Logistic Regression model. Steps include:
+* Standardizing features using `StandardScaler`
+* Training with L2 regularization (`penalty="l2"`) and balanced class weights (`class_weight="balanced"`)
+
+The script outputs the same performance metrics as Random Forest and saves a coefficient-based feature importance plot (`log_reg_preds.pdf`) for the top 20 predictors.
+
+#### Baseline Multi-Layer Perceptron (No Hyperparameter Tuning)
+Run `MLP_NN_model.py` to train a neural network with:
+* Two hidden layers of sizes 128 and 64 (`hidden_layer_sizes=(128,64)`)
+* ReLU activation function (`activation="relu"`)
+* Adam optimizer (`solver="adam"`)
+* Batch size of 256 (`batch_size=256`)
+* Adaptive learning rate (`learning_rate="adaptive"`)
+* 50 training iterations (`max_iter=50`)
+
+Like in Logistic Regression, features are standardized prior to training. The same performance metrics are reported, and the training loss curve is saved as `MLP_Loss.pdf`.
+
+#### Tuned Multi-Layer Perceptron (With Hyperparameter Training)
+Run `MLP_NN_HT_model.py` to perform hyperparameter tuning using `GridSearchCV`. The grid search explores:
+* Network depth and width (`'hidden_layer_sizes': [ (64,), (64, 32), (128, 64, 32)]`)
+* Activation functions (`'activation': ['relu', 'tanh']`)
+* Regularization strength (`'alpha': [0.0001, 0.001, 0.01]`)
+* Learning rates (`'learning_rate_init': [0.001, 0.01]`)
+* Training iterations (`'max_iter': [200, 400]`)
+
+Five-fold cross-validation is used with F1-score as the optimization metric. The best-performing model is evaluated on the test set, and the training loss curve is saved as `MLP_HT_Loss.pdf`.
+
+### 6. Reproducing Main Results
+To reproduce the primary findings:
+1. Run `preprocess.py` to generate `X.npy` and `y.npy`.
+2. Execute each model script independently.
+3. Record reported performance metrics and generated plots.
+4. Repeat preprocessing with and without mental health predictors to replicate the comparative analyses.
+
+Minor numerical variation may occur for neural network models due to the optimization dynamics, but overall performance patterns and feature importance rankings should remain consistent.
+
+## Future Directions
+While the Multi-Layer Perceptron achieved the strongest predictive performance, its limited interpretability motivates future work focused on model transparency. A natural next step is to apply SHAP (SHapley Additive exPlanations) to quantify the contribution of individual features to each prediction, enabling more interpretable explanations and facilitating direct comparison with feature importance measures from Random Forests and coefficients from Logistic Regression. In addition, future research could examine temporal dynamics in depression risk by leveraging longitudinal data from the same students across multiple years. Such an analysis would allow investigation of how risk factors evolve over time, whether the relative importance of predictors shifts and whether depression becomes easier or more difficult to predict as students progress through college. Together, these extensions would strengthen both the interpretability and the real-world applicability of machine learning-based depression risk models. 
+
+## Contributions
+This project was completed individually. I was responsible for all stages of the work, including data acquisition and preprocessing, model design and implementation, experimental evaluation, and interpretation of results. Specifically, I implemented the preprocessing pipeline, constructed and trained all machine learning models, and conducted comparative analyses across datasets and feature sets. I also performed feature importance analyses, generated all visualizations, and synthesized the findings into the final artifact and poster. The project required approximately 35 total hours, distributed across data cleaning and preprocessing, model development and tuning, model runs in both VSCode and JupyterLab, result analysis, and final documentation. 
